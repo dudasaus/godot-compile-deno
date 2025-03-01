@@ -152,7 +152,6 @@ async function exportGodotPreset(
   outputDir: string,
   projectName: string,
 ) {
-  console.log(preset);
   const presetName = preset["name"] as string;
   const platform = (preset["platform"] as string).replaceAll('"', "");
   console.log("Exporting preset", presetName);
