@@ -2,7 +2,7 @@
   "tasks": {
     "run": "deno run --allow-env --allow-read --allow-write --allow-run main.ts",
     "dev": "deno run --allow-env --allow-read --allow-write --allow-run --watch main.ts",
-    "compile": "deno compile --allow-env --allow-read --allow-write --allow-run -o main main.ts"
+    "compile": "deno compile --allow-env --allow-read --allow-write --allow-run -o godot-export-tool main.ts"
   },
   "imports": {
     "@std/cli": "jsr:@std/cli@^1.0.13"
