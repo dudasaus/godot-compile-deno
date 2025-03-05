@@ -1,17 +1,22 @@
-import { exec as childProcessExec } from "node:child_process";
-import path from "node:path";
-import { promisify } from "node:util";
+import { join } from "jsr:@std/path";
+
 import { CfgObject, parseCfg } from "./ParseCfg.ts";
 
-const exec = promisify(childProcessExec);
-
 export async function godot(commandArgs: string[]) {
-  const results = await exec(`godot ${commandArgs.join(" ")}`);
-  return results;
+  const textDecoder = new TextDecoder();
+  const command = new Deno.Command("godot", {
+    args: commandArgs,
+  });
+  const results = await command.output();
+  return {
+    code: results.code,
+    stdout: textDecoder.decode(results.stdout),
+    stderr: textDecoder.decode(results.stderr),
+  };
 }
 
 export async function getProjectName(inputDir: string): Promise<string> {
-  const projectFile = path.join(inputDir, "project.godot");
+  const projectFile = join(inputDir, "project.godot");
   const projectContent = await Deno.readTextFile(projectFile);
   const config = parseCfg(projectContent);
   const app = config["application"] as CfgObject;

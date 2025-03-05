@@ -6,7 +6,7 @@ import {
   platformToOutputFile,
 } from "./components/Godot.ts";
 import { parseArgs } from "@std/cli/parse-args";
-import path from "node:path";
+import { join } from "jsr:@std/path";
 import { exists } from "jsr:@std/fs/exists";
 import { getCurrentYYYYMMDD } from "./components/DateHelper.ts";
 
@@ -138,7 +138,7 @@ async function verifyGodot(): Promise<boolean> {
 }
 
 async function getExportPresets(inputDir: string): Promise<CfgObject> {
-  const file = path.join(inputDir, "export_presets.cfg");
+  const file = join(inputDir, "export_presets.cfg");
   if (!await exists(file)) {
     throw new Error("Export presets file not found: " + file);
   }
@@ -156,12 +156,12 @@ async function exportGodotPreset(
   const platform = (preset["platform"] as string).replaceAll('"', "");
   console.log("Exporting preset", presetName);
   const fixedPresetName = presetName.replaceAll('"', "");
-  const finalOutputDir = path.join(outputDir, fixedPresetName);
+  const finalOutputDir = join(outputDir, fixedPresetName);
   const outputFileName = platformToOutputFile(
     projectName,
     platform,
   );
-  const finalOutputFile = path.join(finalOutputDir, outputFileName);
+  const finalOutputFile = join(finalOutputDir, outputFileName);
   await Deno.mkdir(finalOutputDir);
   await godot([
     "--headless",
@@ -185,13 +185,13 @@ async function getOutputDir(rootOutputDir: string): Promise<string> {
     }
   }
   let version = 1;
-  let outputDir = path.join(
+  let outputDir = join(
     rootOutputDir,
     `${getCurrentYYYYMMDD()}.${String(version).padStart(2, "0")}`,
   );
   while (await exists(outputDir)) {
     version++;
-    outputDir = path.join(
+    outputDir = join(
       rootOutputDir,
       `${getCurrentYYYYMMDD()}.${String(version).padStart(2, "0")}`,
     );
