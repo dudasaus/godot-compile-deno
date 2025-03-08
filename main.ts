@@ -9,6 +9,7 @@ import { parseArgs } from "@std/cli/parse-args";
 import { join } from "jsr:@std/path";
 import { exists } from "jsr:@std/fs/exists";
 import { getCurrentYYYYMMDD } from "./components/DateHelper.ts";
+import { Spinner } from "jsr:@std/cli/unstable-spinner";
 
 const args = parseArgs(Deno.args);
 
@@ -154,7 +155,11 @@ async function exportGodotPreset(
 ) {
   const presetName = preset["name"] as string;
   const platform = (preset["platform"] as string).replaceAll('"', "");
-  console.log("Exporting preset", presetName);
+  const spinner = new Spinner({
+    message: `Exporting preset ${presetName}`,
+    color: "blue",
+  });
+  spinner.start();
   const fixedPresetName = presetName.replaceAll('"', "");
   const finalOutputDir = join(outputDir, fixedPresetName);
   const outputFileName = platformToOutputFile(
@@ -171,6 +176,7 @@ async function exportGodotPreset(
     presetName,
     `"${finalOutputFile}"`,
   ]);
+  spinner.stop();
   console.log("Exported preset", presetName);
   console.log(finalOutputFile);
 }
