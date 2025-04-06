@@ -10,6 +10,7 @@ import { join } from "jsr:@std/path";
 import { exists } from "jsr:@std/fs/exists";
 import { getCurrentYYYYMMDD } from "./components/DateHelper.ts";
 import { Spinner } from "jsr:@std/cli/unstable-spinner";
+import { openFileLocation } from "@dudasaus/open-file-location";
 
 const args = parseArgs(Deno.args);
 
@@ -90,24 +91,32 @@ async function main(): Promise<number> {
   console.log("Output directory:", outputDir);
 
   // Export the selected presets.
-  for (const index of indicesToCompile) {
-    const preset = presets[index];
-    try {
-      await exportGodotPreset(
-        preset,
-        verifiedArgs.inputDir,
-        outputDir,
-        projectName,
-      );
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.error(e.message);
-      } else {
-        const presetName = preset["name"] as string;
-        console.error("Unknown error during export", presetName);
+  if (verifiedArgs.dryRun) {
+    console.log("Dry run enabled. Skipping exports.");
+  } else {
+    for (const index of indicesToCompile) {
+      const preset = presets[index];
+      try {
+        await exportGodotPreset(
+          preset,
+          verifiedArgs.inputDir,
+          outputDir,
+          projectName,
+        );
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.error(e.message);
+        } else {
+          const presetName = preset["name"] as string;
+          console.error("Unknown error during export", presetName);
+        }
+        return 1;
       }
-      return 1;
     }
+  }
+
+  if (confirm("Open export directory?")) {
+    await openFileLocation(outputDir);
   }
 
   return 0;
@@ -206,15 +215,21 @@ async function getOutputDir(rootOutputDir: string): Promise<string> {
   return outputDir;
 }
 
-function getVerifiedArgs(): { inputDir: string; outputDir: string } {
+function getVerifiedArgs(): {
+  inputDir: string;
+  outputDir: string;
+  dryRun: boolean;
+} {
   const inputDir = args._.at(0) ?? ".";
   const outputDir = args["o"] ?? args["output"];
+  const dryRun = Boolean(args["dry-run"]);
   if (!outputDir || typeof outputDir !== "string") {
     throw new Error("Output directory not specified, use -o or --output");
   }
   return {
     inputDir: String(inputDir),
     outputDir,
+    dryRun,
   };
 }
 

@@ -5,6 +5,8 @@
     "compile": "deno compile --allow-env --allow-read --allow-write --allow-run -o godot-export-tool main.ts"
   },
   "imports": {
+    "@dudasaus/open-file-location": "jsr:@dudasaus/open-file-location@^1.0.1",
     "@std/cli": "jsr:@std/cli@^1.0.13"
-  }
+  },
+  "version": "1.0.1"
 }

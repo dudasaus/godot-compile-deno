@@ -1,12 +1,16 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@dudasaus/open-file-location@^1.0.1": "1.0.1",
     "jsr:@std/cli@*": "1.0.13",
     "jsr:@std/cli@^1.0.13": "1.0.13",
     "jsr:@std/fs@*": "1.0.13",
     "jsr:@std/path@*": "1.0.8"
   },
   "jsr": {
+    "@dudasaus/open-file-location@1.0.1": {
+      "integrity": "5a2e9268a546a1e3af1dd89e41c5c9f050be81d7b092af37f72bbe670fa28304"
+    },
     "@std/cli@1.0.13": {
       "integrity": "5db2d95ab2dca3bca9fb6ad3c19908c314e93d6391c8b026725e4892d4615a69"
     },
@@ -19,6 +23,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@dudasaus/open-file-location@^1.0.1",
       "jsr:@std/cli@^1.0.13"
     ]
   }
